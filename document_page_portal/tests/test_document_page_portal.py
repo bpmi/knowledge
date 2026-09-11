@@ -66,6 +66,16 @@ class TestPortalDocumentPageController(odoo.tests.HttpCase):
                 "is_public": True,
             }
         )
+        # Public page that must NOT match the search term below: without it,
+        # a domain that matches everything is indistinguishable from a
+        # working filter.
+        cls.other_public_page = cls.env["document.page"].create(
+            {
+                "name": "Zebra Handbook",
+                "content": "Stripey quadruped notes",
+                "is_public": True,
+            }
+        )
         # Private content page the portal user does not follow: no access.
         cls.private_page = cls.env["document.page"].create(
             {
@@ -111,3 +121,12 @@ class TestPortalDocumentPageController(odoo.tests.HttpCase):
         )
         self.assertEqual(present.status_code, 200)
         self.assertIn("Portal Public Page", present.text)
+
+    def test_06_document_list_search_filter(self):
+        """The search term narrows the portal document list."""
+        self.authenticate("portal_test_user", "portal_test_user")
+        res = self.url_open("/my/knowledge/documents?search=Stripey&search_in=content")
+        self.assertEqual(res.status_code, 200)
+        # "Stripey" appears only in the content of the Zebra page.
+        self.assertIn("Zebra Handbook", res.text)
+        self.assertNotIn("Portal Public Page", res.text)

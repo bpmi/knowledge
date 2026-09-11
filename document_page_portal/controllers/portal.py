@@ -5,7 +5,6 @@
 from odoo import http
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
-from odoo.osv.expression import OR
 from odoo.tools.translate import _
 
 from odoo.addons.portal.controllers.portal import CustomerPortal
@@ -83,22 +82,20 @@ class CustomerPortal(CustomerPortal):
             ]
 
         # search
-        if search and search_in:
-            search_domain = []
-            if search_in in ("content", "all"):
-                search_domain = OR(
-                    [
-                        search_domain,
-                        ["|", ("name", "ilike", search), ("content", "ilike", search)],
-                    ]
-                )
-            domain += search_domain
+        if search and search_in in ("content", "all"):
+            domain += ["|", ("name", "ilike", search), ("content", "ilike", search)]
 
         # pager
         document_pages_count = request.env["document.page"].search_count(domain)
         pager = portal_pager(
             url="/my/knowledge/documents",
-            url_args={"date_begin": date_begin, "date_end": date_end, "sortby": sortby},
+            url_args={
+                "date_begin": date_begin,
+                "date_end": date_end,
+                "sortby": sortby,
+                "search_in": search_in,
+                "search": search,
+            },
             total=document_pages_count,
             page=page,
             step=self._items_per_page,
