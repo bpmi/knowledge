@@ -2,6 +2,8 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
 
+from markupsafe import Markup
+
 from odoo import http
 from odoo.exceptions import AccessError, MissingError
 from odoo.http import request
@@ -65,7 +67,7 @@ class CustomerPortal(CustomerPortal):
         searchbar_inputs = {
             "content": {
                 "input": "content",
-                "label": _('Search <span class="nolabel"> (in Content)</span>'),
+                "label": Markup(_('Search <span class="nolabel"> (in Content)</span>')),
             },
             "all": {"input": "all", "label": _("Search in All")},
         }

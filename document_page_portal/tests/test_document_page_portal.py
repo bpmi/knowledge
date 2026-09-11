@@ -130,3 +130,11 @@ class TestPortalDocumentPageController(odoo.tests.HttpCase):
         # "Stripey" appears only in the content of the Zebra page.
         self.assertIn("Zebra Handbook", res.text)
         self.assertNotIn("Portal Public Page", res.text)
+
+    def test_07_searchbar_label_is_markup(self):
+        """The searchbar label renders as markup, not as escaped text."""
+        self.authenticate("portal_test_user", "portal_test_user")
+        res = self.url_open("/my/knowledge/documents")
+        self.assertEqual(res.status_code, 200)
+        self.assertIn('<span class="nolabel"> (in Content)</span>', res.text)
+        self.assertNotIn("Search &lt;span", res.text)
