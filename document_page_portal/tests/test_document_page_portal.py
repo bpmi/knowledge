@@ -138,3 +138,12 @@ class TestPortalDocumentPageController(odoo.tests.HttpCase):
         self.assertEqual(res.status_code, 200)
         self.assertIn('<span class="nolabel"> (in Content)</span>', res.text)
         self.assertNotIn("Search &lt;span", res.text)
+
+    def test_08_portal_home_card_icon(self):
+        """The portal home card points at an icon that is actually served."""
+        self.authenticate("portal_test_user", "portal_test_user")
+        icon = "/document_page_portal/static/src/img/knowledge.svg"
+        home = self.url_open("/my/home")
+        self.assertEqual(home.status_code, 200)
+        self.assertIn(icon, home.text)
+        self.assertEqual(self.url_open(icon).status_code, 200)

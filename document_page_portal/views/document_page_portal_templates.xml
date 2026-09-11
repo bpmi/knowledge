@@ -31,8 +31,13 @@
     >
         <div id="portal_common_category" position="inside">
             <t t-call="portal.portal_docs_entry">
+                <t
+                    t-set="icon"
+                    t-value="'/document_page_portal/static/src/img/knowledge.svg'"
+                />
                 <t t-set="title">Knowledge Documents</t>
                 <t t-set="url" t-value="'/my/knowledge/documents'" />
+                <t t-set="text">Browse the knowledge documents shared with you</t>
                 <t t-set="placeholder_count" t-value="'document_page_count'" />
             </t>
         </div>
